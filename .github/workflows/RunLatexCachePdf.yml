@@ -72,3 +72,9 @@ jobs:
     - name: Check LaTeX output
       run: |
         ls ${{github.workspace}}/Latex
+
+    - name: Archive build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Binaries_${{env.projectName}}_${{runner.os}}_${{matrix.generator.buildDir}}_${{matrix.compilerCpp.buildSubDir}}
+        path: ${{matrix.generator.buildDir}}/${{matrix.compilerCpp.buildSubDir}}/buildOut

@@ -117,8 +117,8 @@ jobs:
     - name: Tool versions
       shell: bash
       run: | 
-        echo cl --version
-        cl --version
+        echo cl
+        cl
         echo 
         echo cmake --version
         cmake --version
