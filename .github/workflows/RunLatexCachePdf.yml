@@ -1,0 +1,74 @@
+name: Build LaTeX and cache the produced .pdf
+
+on:
+  push: 
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  singleConfig:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install MSVC compiler
+      if: ${{matrix.os == 'windows-latest'}}
+      uses: ilammy/msvc-dev-cmd@v1
+        
+    - name: Show runner
+      run: | 
+        echo ${{runner.os}}
+
+    - name: Install Ninja
+      shell: bash
+      run: ${{ runner.os == 'Linux' && 'sudo apt-get update' && 'sudo apt-get install ninja-build' || runner.os == 'macOS' && 'brew install ninja' || runner.os == 'Windows' && 'choco install ninja' }}
+
+    - name: Install TeX Live
+      uses: teatimeguest/setup-texlive-action@v3
+      with:
+        packages: scheme-basic
+
+    - name: Tool versions
+      shell: bash
+      run: |
+        if [[ ${{matrix.os == 'windows-latest'}} == "true" ]]; then
+          echo cl
+          cl
+          echo
+        elif [[ ${{matrix.os == 'ubuntu-latest'}} == "true" ]]; then
+          echo g++ --version
+          g++ --version
+          echo 
+          echo clang++ --version
+          clang++ --version
+          echo 
+        elif [[ ${{matrix.os == 'macos-latest'}} == "true" ]]; then
+          echo clang++ --version
+          clang++ --version
+          echo 
+        fi
+        echo cmake --version
+        cmake --version
+        echo 
+        echo ninja --version
+        ninja --version
+        echo 
+        echo latex --version
+        latex --version
+
+    - name: Run LaTeX
+      run: |
+        cd Latex
+        pdflatex Latex1.tex
+
+    - name: Check LaTeX output
+      run: |
+        ls ${{github.workspace}}/Latex

@@ -1,0 +1,139 @@
+name: Build LaTeX and cache the produced .pdf on Linux, Mac, Windows
+
+on:
+  push: 
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+
+  build-on-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install Ninja
+      run: |
+        echo sudo apt-get update
+        sudo apt-get update
+        echo sudo apt-get install ninja-build
+        sudo apt-get install ninja-build
+
+    - name: Install TeX Live
+      uses: teatimeguest/setup-texlive-action@v3
+      with:
+        packages: scheme-basic
+
+    - name: Tool versions
+      shell: bash
+      run: | 
+        echo g++ --version
+        g++ --version
+        echo 
+        echo clang++ --version
+        clang++ --version
+        echo 
+        echo cmake --version
+        cmake --version
+        echo 
+        echo ninja --version
+        ninja --version
+        echo 
+        echo latex --version
+        latex --version
+
+    - name: Run LaTeX
+      run: |
+        cd Latex
+        pdflatex Latex1.tex
+
+    - name: Check LaTeX output
+      run: |
+        ls ${{github.workspace}}/Latex
+
+
+  build-on-macos:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install Ninja
+      run: |
+        echo brew install ninja
+        brew install ninja
+
+    - name: Install TeX Live
+      uses: teatimeguest/setup-texlive-action@v3
+      with:
+        packages: scheme-basic
+
+    - name: Tool versions
+      shell: bash
+      run: | 
+        echo clang++ --version
+        clang++ --version
+        echo 
+        echo cmake --version
+        cmake --version
+        echo 
+        echo ninja --version
+        ninja --version
+        echo 
+        echo latex --version
+        latex --version
+
+    - name: Run LaTeX
+      run: |
+        cd Latex
+        pdflatex Latex1.tex
+
+    - name: Check LaTeX output
+      run: |
+        ls ${{github.workspace}}/Latex
+
+
+  build-on-windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Setup MSVC compiler
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install Ninja
+      run: |
+        Write-Host choco install ninja
+        choco install ninja
+
+    - name: Install TeX Live
+      uses: teatimeguest/setup-texlive-action@v3
+      with:
+        packages: scheme-basic
+
+    - name: Tool versions
+      shell: bash
+      run: | 
+        echo cl --version
+        cl --version
+        echo 
+        echo cmake --version
+        cmake --version
+        echo 
+        echo ninja --version
+        ninja --version
+        echo 
+        echo latex --version
+        latex --version
+
+    - name: Run LaTeX
+      run: |
+        cd Latex
+        pdflatex Latex1.tex
+
+    - name: Check LaTeX output
+      run: |
+        ls ${{github.workspace}}/Latex
