@@ -74,6 +74,7 @@ jobs:
         ls ${{github.workspace}}/Latex
 
     - name: Archive build artifacts
+      if: ${{matrix.os != 'windows-latest'}}
       uses: actions/upload-artifact@v3
       with:
         name: Binaries_${{env.projectName}}_${{runner.os}}_${{matrix.generator.buildDir}}_${{matrix.compilerCpp.buildSubDir}}
