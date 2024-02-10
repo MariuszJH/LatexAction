@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [master, develop]
 
+env:
+  projectName: LatexActions
+
 jobs:
   singleConfig:
     strategy:
@@ -76,6 +79,6 @@ jobs:
     - name: Archive build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Binaries_${{env.projectName}}_${{runner.os}}_${{matrix.generator.buildDir}}_${{matrix.compilerCpp.buildSubDir}}
+        name: Binaries_${{env.projectName}}_${{runner.os}}_${{matrix.compilerCpp.buildSubDir}}
         path: Latex/*.pdf
         # path: ${{matrix.generator.buildDir}}/${{matrix.compilerCpp.buildSubDir}}/buildOut
